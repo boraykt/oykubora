@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Mesajlarımız</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" type="image/png" href="heart.png">
+</head>
+<body class="dark">
+
+<div class="side-menu">
+  <h2>MENÜ</h2>
+  <nav>
+    <a href="index.html">Ana Sayfa</a>
+    <a href="galeri.html">Fotoğraflar</a>
+    <a href="mesaj.html">Mesaj Bırak</a>
+    <a href="anilar.html">Anılarımız</a>
+    <a href="mesajlar.html">Mesajlar</a>
+    <a href="sonsuzluk.html">Sonsuzluk</a>
+  </nav>
+</div>
+
+<div class="page-content">
+  <h1>Mesajlarımız</h1>
+  <div id="mesajListesi"></div>
+</div>
+
+<script>
+function mesajlariGoster(){
+  let mesajlar = JSON.parse(localStorage.getItem("mesajlar")) || [];
+  let alan = document.getElementById("mesajListesi");
+
+  if(mesajlar.length === 0){
+    alan.innerHTML = "<p>Henüz mesaj yok ❤️</p>";
+    return;
+  }
+
+  alan.innerHTML = "";
+
+  mesajlar.forEach(function(m, index){
+    alan.innerHTML += `
+      <div class="memory" style="position:relative;">
+        <strong>${m.isim}</strong>
+        <p>${m.text}</p>
+        <small style="color:#888;">${m.tarih}</small>
+
+        <button onclick="tekMesajSil(${index})"
+          style="
+            position:absolute;
+            top:15px;
+            right:15px;
+            background:#b3002d;
+            color:white;
+            border:none;
+            border-radius:50%;
+            width:32px;
+            height:32px;
+            cursor:pointer;
+            font-weight:bold;
+          ">
+          ✕
+        </button>
+      </div>
+    `;
+  });
+}
+
+function tekMesajSil(index){
+  if(confirm("Bu mesaj silinsin mi?")){
+    let mesajlar = JSON.parse(localStorage.getItem("mesajlar")) || [];
+    mesajlar.splice(index, 1);
+    localStorage.setItem("mesajlar", JSON.stringify(mesajlar));
+    mesajlariGoster();
+  }
+}
+
+mesajlariGoster();
+</script>
+
+</body>
+</html>

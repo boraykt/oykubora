@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Mesaj Bırak</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" type="image/png" href="heart.png">
+</head>
+<body class="dark">
+
+<div class="side-menu">
+  <h2>MENÜ</h2>
+  <nav>
+    <a href="index.html">Ana Sayfa</a>
+    <a href="galeri.html">Fotoğraflar</a>
+    <a href="mesaj.html">Mesaj Bırak</a>
+    <a href="anilar.html">Anılarımız</a>
+    <a href="mesajlar.html">Mesajlar</a>
+    <a href="sonsuzluk.html">Sonsuzluk</a>
+  </nav>
+</div>
+
+<div class="page-content">
+  <h1>Bir Mesaj Bırak</h1>
+
+  <input 
+    type="text" 
+    id="isimInput" 
+    placeholder="Adın"
+    style="width:100%; padding:12px; margin-bottom:15px; background:#111; border:1px solid #444; color:white; border-radius:10px;"
+  >
+
+  <textarea 
+    id="mesajInput" 
+    placeholder="Kalbinden geçenleri yaz..."
+  ></textarea>
+
+  <button onclick="mesajKaydet()">Gönder</button>
+</div>
+
+<script>
+function mesajKaydet(){
+  let isim = document.getElementById("isimInput").value.trim();
+  let mesaj = document.getElementById("mesajInput").value.trim();
+
+  if(isim === "" || mesaj === ""){
+    alert("İsim ve mesaj boş olamaz ❤️");
+    return;
+  }
+
+  let mesajlar = JSON.parse(localStorage.getItem("mesajlar")) || [];
+
+  mesajlar.push({
+    isim: isim,
+    text: mesaj,
+    tarih: new Date().toLocaleString()
+  });
+
+  localStorage.setItem("mesajlar", JSON.stringify(mesajlar));
+
+  document.getElementById("isimInput").value = "";
+  document.getElementById("mesajInput").value = "";
+
+  alert("Mesaj kaydedildi 💌");
+}
+</script>
+
+</body>
+</html>

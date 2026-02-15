@@ -1,0 +1,155 @@
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Georgia, serif;
+}
+
+html,body{
+  width:100%;
+  height:100%;
+}
+
+/* SOL ÇAPRAZ MENÜ – HER SAYFADA AYNI */
+.side-menu{
+  position:absolute;
+  left:0;
+  top:0;
+  width:40%;
+  height:100%;
+  padding:60px 40px;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.95) 60%,
+    rgba(255,255,255,0) 100%
+  );
+  clip-path: polygon(0 0, 75% 0, 55% 100%, 0 100%);
+  z-index:10;
+}
+
+.side-menu h2{
+  font-size:26px;
+  margin-bottom:40px;
+  color:#222;
+}
+
+.side-menu nav{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.side-menu a{
+  text-decoration:none;
+  color:#333;
+  font-size:18px;
+  transition:0.3s;
+}
+
+.side-menu a:hover{
+  transform:translateX(10px);
+  color:#b3002d;
+}
+
+/* ANA SAYFA */
+.hero{
+  position:relative;
+  height:100vh;
+}
+
+.hero img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.center-content{
+  position:absolute;
+  top:50%;
+  left:65%;
+  transform:translate(-50%,-50%);
+  color:white;
+  text-align:center;
+}
+
+.center-content h1{
+  font-size:52px;
+}
+
+.date-circle{
+  margin:20px auto;
+  width:140px;
+  height:140px;
+  border-radius:50%;
+  background:white;
+  color:#b3002d;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+}
+
+/* SİYAH SAYFALAR */
+.dark{
+  background:#0b0b0b;
+  color:white;
+}
+
+/* ORTA İÇERİK */
+.page-content{
+  position:absolute;
+  left:65%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  width:45%;
+}
+
+/* GALERİ */
+.gallery{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:20px;
+}
+
+.gallery img{
+  width:100%;
+  height:220px;
+  object-fit:cover;
+  border-radius:15px;
+}
+
+/* MESAJ */
+textarea{
+  width:100%;
+  height:200px;
+  background:#111;
+  border:1px solid #444;
+  color:white;
+  padding:15px;
+  border-radius:10px;
+  resize:none;
+}
+
+button{
+  margin-top:20px;
+  padding:12px 30px;
+  background:#b3002d;
+  border:none;
+  color:white;
+  border-radius:25px;
+  cursor:pointer;
+}
+
+/* ANILAR */
+.memory{
+  background:#111;
+  padding:20px;
+  border-radius:15px;
+  margin-bottom:20px;
+}
+
+/* SONSUZLUK */
+.infinity{
+  font-size:80px;
+  color:#b3002d;
+}
