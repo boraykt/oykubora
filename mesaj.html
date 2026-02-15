@@ -59,8 +59,22 @@ button:hover {
 </style>
 </head>
 
-<body>
+<body class="dark">
 
+<!-- 🔻 SOL MENÜ -->
+<div class="side-menu">
+  <h2>MENÜ</h2>
+  <nav>
+    <a href="index.html">Ana Sayfa</a>
+    <a href="galeri.html">Fotoğraflar</a>
+    <a href="mesaj.html">Mesaj Bırak</a>
+    <a href="anilar.html">Anılarımız</a>
+    <a href="mesajlar.html">Mesajlar</a>
+    <a href="sonsuzluk.html">Sonsuzluk</a>
+  </nav>
+</div>
+
+<!-- 🔻 SAYFA -->
 <div class="page-content">
   <h1>💌 Bir Mesaj Bırak</h1>
 
@@ -71,6 +85,7 @@ button:hover {
   </form>
 </div>
 
+<!-- 🔥 FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -92,7 +107,7 @@ form.addEventListener("submit", async (e) => {
   const isim = document.getElementById("isim").value.trim();
   const mesaj = document.getElementById("mesaj").value.trim();
 
-  if(!isim || !mesaj){
+  if (!isim || !mesaj) {
     alert("Lütfen tüm alanları doldur ❤️");
     return;
   }
