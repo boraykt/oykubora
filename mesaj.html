@@ -67,13 +67,13 @@ button:hover {
   <form id="mesajForm">
     <input type="text" id="isim" placeholder="Adın" required>
     <textarea id="mesaj" rows="4" placeholder="Kalbinden geçenleri yaz..." required></textarea>
-    <button type="submit">Gönder</button>
+    <button onclick="mesajGonder()">Gönder</button>
   </form>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC15_7m7NfYUBkrNWp9uDqw7n3IePBoE2s",
@@ -84,30 +84,38 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const form = document.getElementById("mesajForm");
+window.mesajGonder = async function () {
+  const isim = document.getElementById("isimInput").value.trim();
+  const mesaj = document.getElementById("mesajInput").value.trim();
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const isim = document.getElementById("isim").value.trim();
-  const mesaj = document.getElementById("mesaj").value.trim();
-
-  if(!isim || !mesaj){
-    alert("Lütfen tüm alanları doldur ❤️");
+  if (!isim || !mesaj) {
+    alert("İsim ve mesaj boş olamaz ❤️");
     return;
   }
+
+  // 🔐 GİZLİ SİLME KODU
+  const silmeKodu = Math.random().toString(36).substring(2, 10);
 
   await addDoc(collection(db, "mesajlar"), {
     siteID: "bora-oyku",
     isim: isim,
     mesaj: mesaj,
-    tarih: new Date()
+    silmeKodu: silmeKodu,
+    tarih: serverTimestamp()
   });
 
-  alert("Mesaj gönderildi 💗");
-  form.reset();
-});
+  alert(
+    "Mesaj gönderildi 💌\n\n" +
+    "⚠️ Bu mesajı silmek için kodun:\n" +
+    silmeKodu +
+    "\n\nBu kodu sakla!"
+  );
+
+  document.getElementById("isimInput").value = "";
+  document.getElementById("mesajInput").value = "";
+};
 </script>
+
 
 </body>
 </html>
