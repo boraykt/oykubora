@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="style.css">
 <link rel="icon" type="image/png" href="heart.png">
 </head>
+
 <body class="dark">
 
 <div class="side-menu">
@@ -25,79 +26,35 @@
   <div id="mesajListesi"></div>
 </div>
 
-<script>
-function mesajlariGoster(){
-  let mesajlar = JSON.parse(localStorage.getItem("mesajlar")) || [];
-  let alan = document.getElementById("mesajListesi");
-
-  if(mesajlar.length === 0){
-    alan.innerHTML = "<p>Henüz mesaj yok ❤️</p>";
-    return;
-  }
-
-  alan.innerHTML = "";
-
-  mesajlar.forEach(function(m, index){
-    alan.innerHTML += `
-      <div class="memory" style="position:relative;">
-        <strong>${m.isim}</strong>
-        <p>${m.text}</p>
-        <small style="color:#888;">${m.tarih}</small>
-
-        <button onclick="tekMesajSil(${index})"
-          style="
-            position:absolute;
-            top:15px;
-            right:15px;
-            background:#b3002d;
-            color:white;
-            border:none;
-            border-radius:50%;
-            width:32px;
-            height:32px;
-            cursor:pointer;
-            font-weight:bold;
-          ">
-          ✕
-        </button>
-      </div>
-    `;
-  });
-}
-
-function tekMesajSil(index){
-  if(confirm("Bu mesaj silinsin mi?")){
-    let mesajlar = JSON.parse(localStorage.getItem("mesajlar")) || [];
-    mesajlar.splice(index, 1);
-    localStorage.setItem("mesajlar", JSON.stringify(mesajlar));
-    mesajlariGoster();
-  }
-}
-
-mesajlariGoster();
-</script>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  query,
+  where,
+  orderBy
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const firebaseConfig = {
+document.addEventListener("DOMContentLoaded", async () => {
+
+  const firebaseConfig = {
     apiKey: "AIzaSyC15_7m7NfYUBkrNWp9uDqw7n3IePBoE2s",
     authDomain: "oykubora-bdf60.firebaseapp.com",
     projectId: "oykubora-bdf60",
-    storageBucket: "oykubora-bdf60.firebasestorage.app",
+    storageBucket: "oykubora-bdf60.appspot.com",
     messagingSenderId: "441769060401",
-    appId: "1:441769060401:web:0a862d2e446c2458e3cd10",
-    measurementId: "G-HRVVBXNKZP"
+    appId: "1:441769060401:web:0a862d2e446c2458e3cd10"
   };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-/* 🔥 HER MÜŞTERİYE ÖZEL */
-const siteID = "bora-oyku";
+  const siteID = "bora-oyku";
+  const container = document.getElementById("mesajListesi");
 
-async function mesajlariGetir() {
+  container.innerHTML = "<p>Yükleniyor…</p>";
 
   const q = query(
     collection(db, "mesajlar"),
@@ -105,24 +62,28 @@ async function mesajlariGetir() {
     orderBy("tarih", "desc")
   );
 
-  const querySnapshot = await getDocs(q);
-  const container = document.getElementById("mesajListesi");
+  const snapshot = await getDocs(q);
 
-  querySnapshot.forEach((doc) => {
+  if (snapshot.empty) {
+    container.innerHTML = "<p>Henüz mesaj yok ❤️</p>";
+    return;
+  }
+
+  container.innerHTML = "";
+
+  snapshot.forEach(doc => {
     const data = doc.data();
 
     container.innerHTML += `
-      <div class="mesaj-kart">
-        <h3>${data.isim}</h3>
+      <div class="memory">
+        <strong>${data.isim}</strong>
         <p>${data.mesaj}</p>
       </div>
     `;
   });
-}
 
-mesajlariGetir();
+});
 </script>
 
 </body>
 </html>
-
