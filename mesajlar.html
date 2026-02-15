@@ -77,5 +77,52 @@ function tekMesajSil(index){
 mesajlariGoster();
 </script>
 
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyC15_7m7NfYUBkrNWp9uDqw7n3IePBoE2s",
+    authDomain: "oykubora-bdf60.firebaseapp.com",
+    projectId: "oykubora-bdf60",
+    storageBucket: "oykubora-bdf60.firebasestorage.app",
+    messagingSenderId: "441769060401",
+    appId: "1:441769060401:web:0a862d2e446c2458e3cd10",
+    measurementId: "G-HRVVBXNKZP"
+  };
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+/* 🔥 HER MÜŞTERİYE ÖZEL */
+const siteID = "bora-oyku";
+
+async function mesajlariGetir() {
+
+  const q = query(
+    collection(db, "mesajlar"),
+    where("siteID", "==", siteID),
+    orderBy("tarih", "desc")
+  );
+
+  const querySnapshot = await getDocs(q);
+  const container = document.getElementById("mesajListesi");
+
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+
+    container.innerHTML += `
+      <div class="mesaj-kart">
+        <h3>${data.isim}</h3>
+        <p>${data.mesaj}</p>
+      </div>
+    `;
+  });
+}
+
+mesajlariGetir();
+</script>
+
 </body>
 </html>
+
