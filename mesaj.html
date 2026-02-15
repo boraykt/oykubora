@@ -3,45 +3,59 @@
 <head>
 <meta charset="UTF-8">
 <title>Mesaj Bırak</title>
+
 <link rel="stylesheet" href="style.css">
 <link rel="icon" type="image/png" href="heart.png">
+
+<style>
+body {
+  background:#0d0d0d;
+  color:white;
+  font-family: Arial, sans-serif;
+}
+
+.page-content {
+  max-width: 500px;
+  margin: 80px auto;
+  padding: 20px;
+}
+
+input, textarea {
+  width:100%;
+  padding:12px;
+  margin-bottom:15px;
+  background:#111;
+  border:1px solid #444;
+  color:white;
+  border-radius:10px;
+}
+
+button {
+  width:100%;
+  padding:12px;
+  background:#e63946;
+  color:white;
+  border:none;
+  border-radius:10px;
+  font-size:16px;
+  cursor:pointer;
+}
+
+button:hover {
+  background:#ff4d5a;
+}
+</style>
 </head>
 
-<body class="dark">
-
-<div class="side-menu">
-  <h2>MENÜ</h2>
-  <nav>
-    <a href="index.html">Ana Sayfa</a>
-    <a href="galeri.html">Fotoğraflar</a>
-    <a href="mesaj.html">Mesaj Bırak</a>
-    <a href="anilar.html">Anılarımız</a>
-    <a href="mesajlar.html">Mesajlar</a>
-    <a href="sonsuzluk.html">Sonsuzluk</a>
-  </nav>
-</div>
+<body>
 
 <div class="page-content">
-  <h1>Bir Mesaj Bırak</h1>
+  <h1>💌 Bir Mesaj Bırak</h1>
 
   <form id="mesajForm">
-
-    <input
-      type="text"
-      id="isim"
-      placeholder="Adın"
-      required
-      style="width:100%; padding:12px; margin-bottom:15px; background:#111; border:1px solid #444; color:white; border-radius:10px;"
-    >
-
-    <textarea
-      id="mesaj"
-      placeholder="Kalbinden geçenleri yaz..."
-      required
-    ></textarea>
-
+    <input type="text" id="isim" placeholder="Adın" required>
+    <textarea id="mesaj" rows="4" placeholder="Kalbinden geçenleri yaz..." required></textarea>
     <button type="submit">Gönder</button>
-
   </form>
 </div>
 
@@ -49,45 +63,37 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-document.addEventListener("DOMContentLoaded", () => {
+const firebaseConfig = {
+  apiKey: "AIzaSyC15_7m7NfYUBkrNWp9uDqw7n3IePBoE2s",
+  authDomain: "oykubora-bdf60.firebaseapp.com",
+  projectId: "oykubora-bdf60"
+};
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyC15_7m7NfYUBkrNWp9uDqw7n3IePBoE2s",
-    authDomain: "oykubora-bdf60.firebaseapp.com",
-    projectId: "oykubora-bdf60",
-    storageBucket: "oykubora-bdf60.appspot.com",
-    messagingSenderId: "441769060401",
-    appId: "1:441769060401:web:0a862d2e446c2458e3cd10"
-  };
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+const form = document.getElementById("mesajForm");
 
-  const siteID = "bora-oyku";
-  const form = document.getElementById("mesajForm");
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  const isim = document.getElementById("isim").value.trim();
+  const mesaj = document.getElementById("mesaj").value.trim();
 
-    const isim = document.getElementById("isim").value.trim();
-    const mesaj = document.getElementById("mesaj").value.trim();
+  if(!isim || !mesaj){
+    alert("Lütfen tüm alanları doldur ❤️");
+    return;
+  }
 
-    if (!isim || !mesaj) {
-      alert("İsim ve mesaj boş olamaz ❤️");
-      return;
-    }
-
-    await addDoc(collection(db, "mesajlar"), {
-      siteID,
-      isim,
-      mesaj,
-      tarih: new Date()
-    });
-
-    alert("Mesaj gönderildi 💗");
-    form.reset();
+  await addDoc(collection(db, "mesajlar"), {
+    siteID: "bora-oyku",
+    isim: isim,
+    mesaj: mesaj,
+    tarih: new Date()
   });
 
+  alert("Mesaj gönderildi 💗");
+  form.reset();
 });
 </script>
 
