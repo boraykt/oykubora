@@ -91,40 +91,47 @@ const mesajListesi = document.getElementById("mesajListesi");
 const loading = document.getElementById("loading");
 
 async function mesajlariGetir() {
-  const q = query(
-    collection(db, "mesajlar"),
-    where("siteID", "==", "bora-oyku")
-  );
+  try {
+    const q = query(
+      collection(db, "mesajlar"),
+      where("siteID", "==", "bora-oyku")
+    );
 
-  const snapshot = await getDocs(q);
-  loading.style.display = "none";
+    const snapshot = await getDocs(q);
+    loading.style.display = "none";
 
-  snapshot.forEach(d => {
-    const data = d.data();
+    if (snapshot.empty) {
+      mesajListesi.innerHTML = "<p>Henüz mesaj yok ❤️</p>";
+      return;
+    }
 
-    const kart = document.createElement("div");
-    kart.className = "mesaj-kart";
+    snapshot.forEach(d => {
+      const data = d.data();
 
-    kart.innerHTML = `
-      <h3>${data.isim}</h3>
-      <p>${data.mesaj}</p>
-      <button class="sil-btn">Mesajımı Sil</button>
-    `;
+      const kart = document.createElement("div");
+      kart.className = "mesaj-kart";
 
-    kart.querySelector(".sil-btn").onclick = async () => {
-      const girilenKod = prompt("Silme kodunu gir:");
+      kart.innerHTML = `
+        <h3>${data.isim}</h3>
+        <p>${data.mesaj}</p>
+        <button class="sil-btn">Mesajı Sil</button>
+      `;
 
-      if (girilenKod === data.silmeKodu) {
+      kart.querySelector(".sil-btn").onclick = async () => {
+        const onay = confirm("Bu mesaj silinsin mi?");
+        if (!onay) return;
+
         await deleteDoc(doc(db, "mesajlar", d.id));
-        alert("Mesaj silindi 💔");
-        location.reload();
-      } else {
-        alert("Silme kodu yanlış ❌");
-      }
-    };
+        kart.remove();
+      };
 
-    mesajListesi.appendChild(kart);
-  });
+      mesajListesi.appendChild(kart);
+    });
+
+  } catch (err) {
+    loading.innerText = "Mesajlar yüklenemedi 😢";
+    console.error(err);
+  }
 }
 
 mesajlariGetir();
@@ -132,5 +139,7 @@ mesajlariGetir();
 
 
 
+
 </body>
 </html>
+
