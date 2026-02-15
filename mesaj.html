@@ -65,5 +65,45 @@ function mesajKaydet(){
 }
 </script>
 
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyC15_7m7NfYUBkrNWp9uDqw7n3IePBoE2s",
+    authDomain: "oykubora-bdf60.firebaseapp.com",
+    projectId: "oykubora-bdf60",
+    storageBucket: "oykubora-bdf60.firebasestorage.app",
+    messagingSenderId: "441769060401",
+    appId: "1:441769060401:web:0a862d2e446c2458e3cd10",
+    measurementId: "G-HRVVBXNKZP"
+  };
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+/* 🔥 HER MÜŞTERİYE ÖZEL */
+const siteID = "bora-oyku"; 
+
+const form = document.getElementById("mesajForm");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const isim = document.getElementById("isim").value;
+  const mesaj = document.getElementById("mesaj").value;
+
+  await addDoc(collection(db, "mesajlar"), {
+    siteID: siteID,
+    isim: isim,
+    mesaj: mesaj,
+    tarih: new Date()
+  });
+
+  alert("Mesaj gönderildi 💗");
+  form.reset();
+});
+</script>
+
 </body>
 </html>
