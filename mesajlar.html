@@ -68,7 +68,15 @@ body {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+  deleteDoc,
+  doc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC15_7m7NfYUBkrNWp9uDqw7n3IePBoE2s",
@@ -83,43 +91,45 @@ const mesajListesi = document.getElementById("mesajListesi");
 const loading = document.getElementById("loading");
 
 async function mesajlariGetir() {
-  try {
-    const q = query(
-      collection(db, "mesajlar"),
-      where("siteID", "==", "bora-oyku")
-    );
+  const q = query(
+    collection(db, "mesajlar"),
+    where("siteID", "==", "bora-oyku")
+  );
 
-    const snapshot = await getDocs(q);
+  const snapshot = await getDocs(q);
+  loading.style.display = "none";
 
-    loading.style.display = "none";
+  snapshot.forEach(d => {
+    const data = d.data();
 
-    if (snapshot.empty) {
-      mesajListesi.innerHTML = "<p>Henüz mesaj yok 💔</p>";
-      return;
-    }
+    const kart = document.createElement("div");
+    kart.className = "mesaj-kart";
 
-    snapshot.forEach(doc => {
-      const data = doc.data();
+    kart.innerHTML = `
+      <h3>${data.isim}</h3>
+      <p>${data.mesaj}</p>
+      <button class="sil-btn">Mesajımı Sil</button>
+    `;
 
-      const div = document.createElement("div");
-      div.className = "mesaj";
-      div.innerHTML = `
-        <h3>${data.isim}</h3>
-        <p>${data.mesaj}</p>
-        <span>${new Date(data.tarih.seconds * 1000).toLocaleString()}</span>
-      `;
+    kart.querySelector(".sil-btn").onclick = async () => {
+      const girilenKod = prompt("Silme kodunu gir:");
 
-      mesajListesi.appendChild(div);
-    });
+      if (girilenKod === data.silmeKodu) {
+        await deleteDoc(doc(db, "mesajlar", d.id));
+        alert("Mesaj silindi 💔");
+        location.reload();
+      } else {
+        alert("Silme kodu yanlış ❌");
+      }
+    };
 
-  } catch (err) {
-    loading.innerText = "Mesajlar yüklenemedi 😢";
-    console.error(err);
-  }
+    mesajListesi.appendChild(kart);
+  });
 }
 
 mesajlariGetir();
 </script>
+
 
 
 </body>
