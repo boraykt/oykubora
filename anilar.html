@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html><!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="style.css">
 <link rel="icon" type="image/png" href="heart.png">
 </head>
+
 <body class="dark">
 
 <div class="side-menu">
@@ -21,51 +22,95 @@
 </div>
 
 <div class="page-content">
-  <h1>Anılarımız</h1>
+  <h1>📸 Anı Ekle</h1>
 
-  <!-- ANI KARTI -->
-  <div class="memory" style="display:flex; gap:20px; align-items:center;">
-    <img src="IMG_7765.JPG" style="
-      width:140px;
-      height:180px;
-      object-fit:cover;
-      border-radius:15px;
-    ">
-    <div>
-      <h3>İlk Tanıştığımız Gün</h3>
-      <p>O gün her şey sessizce başladı ama her şeyi değiştirdi.</p>
-    </div>
-  </div>
+  <form id="aniForm">
+    <input type="file" id="foto" accept="image/*" required>
+    <textarea id="aniMesaj" placeholder="Bu anıyı anlat..." required></textarea>
+    <button type="submit">Anı Kaydet</button>
+  </form>
 
-  <!-- ANI KARTI -->
-  <div class="memory" style="display:flex; gap:20px; align-items:center;">
-    <img src="IMG_7765.JPG" style="
-      width:140px;
-      height:180px;
-      object-fit:cover;
-      border-radius:15px;
-    ">
-    <div>
-      <h3>İlk Fotoğrafımız</h3>
-      <p>Bir kareye sığan mutluluk ve sonsuzluk hissi.</p>
-    </div>
-  </div>
-
-  <!-- ANI KARTI -->
-  <div class="memory" style="display:flex; gap:20px; align-items:center;">
-    <img src="IMG_7765.JPG" style="
-      width:140px;
-      height:180px;
-      object-fit:cover;
-      border-radius:15px;
-    ">
-    <div>
-      <h3>Birlikte Gülüşler</h3>
-      <p>En güzel anılar plansız olanlar.</p>
-    </div>
-  </div>
-
+  <h2 style="margin-top:50px;">💞 Anılarımız</h2>
+  <div id="anilarListesi"></div>
 </div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC15_7m7NfYUBkrNWp9uDqw7n3IePBoE2s",
+  authDomain: "oykubora-bdf60.firebaseapp.com",
+  projectId: "oykubora-bdf60",
+  storageBucket: "oykubora-bdf60.appspot.com"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+const siteID = "bora-oyku";
+
+const form = document.getElementById("aniForm");
+const anilarListesi = document.getElementById("anilarListesi");
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const file = document.getElementById("foto").files[0];
+  const mesaj = document.getElementById("aniMesaj").value.trim();
+
+  if(!file || !mesaj){
+    alert("Fotoğraf ve mesaj zorunlu ❤️");
+    return;
+  }
+
+  const storageRef = ref(storage, "anilar/" + Date.now() + "_" + file.name);
+
+  await uploadBytes(storageRef, file);
+  const downloadURL = await getDownloadURL(storageRef);
+
+  await addDoc(collection(db, "anilar"), {
+    siteID: siteID,
+    mesaj: mesaj,
+    fotoURL: downloadURL,
+    tarih: new Date()
+  });
+
+  alert("Anı eklendi 💖");
+  form.reset();
+  anilariGetir();
+});
+
+async function anilariGetir() {
+
+  const q = query(
+    collection(db, "anilar"),
+    where("siteID", "==", siteID),
+    orderBy("tarih", "desc")
+  );
+
+  const snapshot = await getDocs(q);
+
+  anilarListesi.innerHTML = "";
+
+  snapshot.forEach((doc) => {
+    const data = doc.data();
+
+    anilarListesi.innerHTML += `
+      <div class="memory-card">
+        <img src="${data.fotoURL}" />
+        <p>${data.mesaj}</p>
+      </div>
+    `;
+  });
+}
+
+anilariGetir();
+
+</script>
 
 </body>
 </html>
